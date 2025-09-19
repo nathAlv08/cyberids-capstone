@@ -13,7 +13,9 @@ We applied multiple approaches — from classical ML to anomaly detection — an
 - **Size (after sampling):** ~300,000 records, 78 features  
 - **Classes:**  
   - **BENIGN** (normal traffic)  
-  - **ATTACKS** (DoS, PortScan, DDoS, Brute Force, Infiltration, etc.)  
+  - **ATTACKS** (DoS, PortScan, DDoS, Brute Force, Infiltration, etc.)
+- Can be accessed thorugh https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset which in my project be downloaded using kaggle API or you can view it in this 
+  drive https://drive.google.com/drive/folders/1hiXfGF_PdaCqEdue5BoBRunG_Oe6IPze?usp=sharing
 
 **Sampling strategy:** Stratified random sampling to keep class balance and ensure computational feasibility.  
 
