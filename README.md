@@ -88,18 +88,6 @@ Throughout the project, **IBM Granite LLM** was used for:
 
 ---
 
-## 📦 Repository Structure
-├── data/ # Raw and sampled dataset
-├── notebooks/ # Jupyter/Colab notebooks
-│ └── ClassificationData&SummarizationIBMCapstone.ipynb
-├── reports/ # PPT / PDF presentation slides
-├── README.md # Project documentation
-
-yaml
-Copy code
-
----
-
 ## 📤 Submission Details
 - **Notebook:** Colab + GitHub repo with dataset + code  
 - **Presentation:** PPT/PDF summarizing findings  
