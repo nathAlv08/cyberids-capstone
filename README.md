@@ -1,128 +1,116 @@
-#🚀 CIC-IDS2017 Intrusion Detection Capstone Project
-📌 Project Overview
+# CICIDS2017 Intrusion Detection Capstone Project
 
-This capstone project develops and evaluates an Intrusion Detection System (IDS) using the CIC-IDS2017 dataset (mirrored from Kaggle).
-The main objective is to accurately distinguish malicious network traffic (attacks) from benign traffic, ensuring robust anomaly detection for cybersecurity applications.
+## 📌 Project Overview
+This capstone project focuses on building an **intrusion detection system (IDS)** using the [CICIDS2017 dataset](https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset) (mirrored on Kaggle).  
+The goal is to classify network traffic as **benign or malicious** and provide actionable insights for cybersecurity defense.  
 
-We follow a structured modeling approach:
+We applied multiple approaches — from classical ML to anomaly detection — and compared their strengths and weaknesses.  
 
-Start with a linear baseline (Logistic Regression).
+---
 
-Advance to tree-based supervised models (RandomForest & XGBoost).
+## 📂 Dataset
+- **Source:** CICIDS2017 (Canadian Institute for Cybersecurity)  
+- **Size (after sampling):** ~300,000 records, 78 features  
+- **Classes:**  
+  - **BENIGN** (normal traffic)  
+  - **ATTACKS** (DoS, PortScan, DDoS, Brute Force, Infiltration, etc.)  
 
-Experiment with an unsupervised anomaly detector (IsolationForest).
+**Sampling strategy:** Stratified random sampling to keep class balance and ensure computational feasibility.  
 
-Evaluate feature importance with SHAP for explainability.
+---
 
-Summarize findings and give practical cybersecurity recommendations.
+## 🛠️ Modelling Approach
+We evaluated **supervised** and **unsupervised** models:
 
-📊 Dataset
+### 🔹 1. RandomForest (Baseline)
+- Strong, interpretable supervised classifier.
+- Tuned with class balancing (`class_weight="balanced_subsample"`).
+- Served as our main benchmark.  
 
-Source: CIC-IDS2017 dataset (Kaggle mirror).
+### 🔹 2. XGBoost
+- Gradient boosting method optimized for structured/tabular data.  
+- Achieved high accuracy and generalization.  
 
-Size: ~2.8M rows, 79 features.
+### 🔹 3. Logistic Regression
+- Lightweight linear model for comparison.  
+- Useful as a baseline sanity check.  
 
-Sampling Strategy: To handle large size and class imbalance, we used stratified random sampling (balanced ~300k rows for training).
+### 🔹 4. IsolationForest (Unsupervised)
+- Trained only on **benign traffic** to flag anomalies.  
+- Explored different contamination values (`0.001–0.1`).  
+- Results showed very **low recall** → anomaly detection alone struggles in CICIDS2017.  
 
-Classes:
+---
 
-BENIGN (normal traffic)
+## 📊 Results & Metrics
 
-ATTACK (aggregated malicious traffic)
+| Model              | Precision | Recall | F1-score | ROC-AUC |
+|--------------------|-----------|--------|----------|---------|
+| **RandomForest**   | ~0.9985   | ~0.9985| ~0.9985  | High    |
+| **XGBoost**        | ~0.997–0.998 | ~0.997–0.998 | ~0.998 | High    |
+| **Logistic Reg.**  | Lower     | Lower  | Lower    | Moderate|
+| **IsolationForest**| 0.0526    | 0.0002 | Very low | Poor    |
 
-🧪 Modelling Approach
-1. Logistic Regression (Baseline)
+📌 **Interpretation:**
+- **Supervised models (RF, XGBoost)** → excellent detection, near-perfect metrics.  
+- **IsolationForest** → performed poorly, confirming that CICIDS2017 attacks are not strong statistical outliers.  
 
-Provides a simple linear benchmark.
+---
 
-Achieved decent accuracy but underperformed on recall compared to tree models.
+## 🔍 Explainability
+We used **SHAP (SHapley Additive exPlanations)** to understand model behavior:  
+- Top contributing features included **Flow Duration, Packet Length, Flow IAT Mean**, etc.  
+- SHAP summary plots and feature importance rankings provided transparency for stakeholders.  
 
-Shows that non-linear relationships are crucial in intrusion detection.
+---
 
-2. RandomForest (Supervised, Ensemble)
+## 🤖 AI Support (IBM Granite)
+Throughout the project, **IBM Granite LLM** was used for:  
+- **Exploratory Data Analysis (EDA)** guidance  
+- **Feature importance summarization**  
+- **Executive-level reporting** → auto-generated summaries & recommendations for cybersecurity teams.  
 
-Strong baseline for tabular IDS data.
+---
 
-Trained with class_weight="balanced_subsample".
+## 📈 Key Insights
+1. **RandomForest and XGBoost are highly reliable** for intrusion detection on CICIDS2017.  
+2. **IsolationForest is insufficient** as a standalone IDS — recall was too low.  
+3. **Feature explainability** (via SHAP) gives trust and transparency, critical for real-world adoption.  
+4. **Balanced sampling** ensured fair training and evaluation.  
 
-Achieved near-perfect Precision, Recall, F1, and ROC-AUC (~0.998).
+---
 
-Robust against noise and imbalance.
+## ✅ Recommendations
+- Use **RandomForest/XGBoost** as the production baseline IDS.  
+- Deploy **explainability tools (SHAP)** alongside models for transparency.  
+- Explore **deep learning (RNNs/CNNs)** for sequential traffic analysis.  
+- Consider **real-time deployment** using streaming frameworks (Kafka, Flink).  
 
-3. XGBoost (Gradient Boosted Trees)
+---
 
-Gradient boosting enhanced decision boundaries further.
+## 📦 Repository Structure
+├── data/ # Raw and sampled dataset
+├── notebooks/ # Jupyter/Colab notebooks
+│ └── ClassificationData&SummarizationIBMCapstone.ipynb
+├── reports/ # PPT / PDF presentation slides
+├── README.md # Project documentation
 
-Slightly outperformed RandomForest in some metrics (higher recall for minority attacks).
+yaml
+Copy code
 
-Best candidate for deployment-ready IDS.
+---
 
-4. IsolationForest (Unsupervised Anomaly Detection)
+## 📤 Submission Details
+- **Notebook:** Colab + GitHub repo with dataset + code  
+- **Presentation:** PPT/PDF summarizing findings  
+- **AI Support:** Documented use of IBM Granite  
 
-Trained only on benign traffic to flag anomalies as attacks.
+---
 
-Tested contamination grid [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1].
-
-Best contamination = 0.1 → Recall = 0.0002, Precision = 0.0526.
-
-Performed poorly → confirms that CIC-IDS2017 attacks are not strong statistical outliers but require labeled learning.
-
-Conclusion: unsupervised anomaly detection is insufficient for this dataset.
-
-📈 Results & Comparison
-Model	Precision	Recall	F1-Score	ROC-AUC
-Logistic Regression	~0.92	~0.90	~0.91	~0.94
-RandomForest	0.9985	0.9985	0.9985	0.9986
-XGBoost	0.9990	0.9991	0.9991	0.9992
-IsolationForest	0.0526	0.0002	~0.0004	N/A
-
-👉 XGBoost and RandomForest dominate, while Logistic Regression lags, and IsolationForest fails.
-
-🔍 Explainability with SHAP
-
-We applied SHAP (SHapley Additive exPlanations) to RandomForest to interpret feature impact.
-
-Top-5 Most Important Features:
-
-Flow Duration
-
-Total Fwd Packets
-
-Fwd Packet Length Mean
-
-Bwd IAT Std
-
-Packet Length Std
-
-📌 Insight: Attack traffic often shows abnormal packet burstiness, irregular timing patterns, and extreme flow durations. These patterns were the strongest indicators of malicious behavior.
-
-📝 Executive Summary (Granite-assisted)
-
-Our IDS models on CIC-IDS2017 show that supervised ensemble methods (XGBoost/RandomForest) achieve near-perfect performance, far exceeding simpler models and anomaly detectors.
-
-IsolationForest, while attractive for unlabeled data, performed poorly due to the dataset’s complex attack distribution.
-
-Feature analysis with SHAP confirmed that network timing and packet size variability are the strongest predictors of intrusion.
-
-✅ Recommendations
-
-Deploy XGBoost/RandomForest for operational IDS.
-
-Continuously monitor model drift as new attack patterns emerge.
-
-Use SHAP insights to guide rule-based detection and firewall tuning.
-
-Keep anomaly detectors like IsolationForest as lightweight pre-filters, but not as primary IDS.
-
-⚠️ Limitations & Future Work
-
-CIC-IDS2017 is a lab-collected dataset → may not fully reflect real-world traffic.
-
-Models may overfit lab scenarios → need testing on live/streaming data.
-
-IsolationForest confirms: anomaly-only training is insufficient here.
-
-Future directions:
+## 🙌 Acknowledgements
+- Dataset by **Canadian Institute for Cybersecurity (CIC)**  
+- IBM Granite for LLM-based assistance  
+- Project completed as part of **Capstone – Data Classification & Summarization**  
 
 Deep learning models (Autoencoders, LSTMs) for sequential traffic patterns.
 
